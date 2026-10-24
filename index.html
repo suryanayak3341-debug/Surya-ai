@@ -1,698 +1,305 @@
-rya AI - आपका पर्सनल AI साथी</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #0a0b1e;
-            --card-bg: rgba(22, 27, 56, 0.75);
-            --card-border: rgba(147, 51, 234, 0.25);
-            --primary: #9333ea;
-            --primary-light: #c084fc;
-            --secondary: #3b82f6;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --bubble-user: linear-gradient(135deg, #7e22ce, #3b82f6);
-            --bubble-ai: rgba(30, 41, 79, 0.85);
-            --accent-glow: rgba(147, 51, 234, 0.4);
-        }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
 
-        body {
-            background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(147, 51, 234, 0.18) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.18) 0%, transparent 40%);
-            background-attachment: fixed;
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+<!DOCTYPE html>
 
-        /* Top Header */
-        header {
-            padding: env(safe-area-inset-top, 16px) 16px 12px 16px;
-            background: rgba(10, 11, 30, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--card-border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 50;
-        }
+<html lang="hi">
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+<head>
 
-        .brand-logo {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #a855f7, #3b82f6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
+<meta charset="UTF-8">
 
-        .brand-text h1 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            background: linear-gradient(to right, #c084fc, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        .brand-text p {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
+<title>Surya AI - आपका पर्सनल AI साथी</title>
 
-        .status-badge {
-            font-size: 0.7rem;
-            background: rgba(34, 197, 94, 0.15);
-            color: #4ade80;
-            border: 1px solid rgba(74, 222, 128, 0.3);
-            padding: 4px 10px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+<style>
 
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            background: #4ade80;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
+* { box-sizing: border-box; }
 
-        @keyframes pulse {
-            0% { opacity: 0.4; }
-            50% { opacity: 1; }
-            100% { opacity: 0.4; }
-        }
+body {
 
-        /* Main Container */
-        main {
-            flex: 1;
-            overflow-y: auto;
-            position: relative;
-            padding-bottom: 90px; /* Safe space for bottom nav */
-            -webkit-overflow-scrolling: touch;
-        }
+  margin: 0;
 
-        .tab-content {
-            display: none;
-            padding: 16px;
-            max-width: 600px;
-            margin: 0 auto;
-            animation: fadeIn 0.3s ease;
-        }
+  font-family: Arial, sans-serif;
 
-        .tab-content.active {
-            display: block;
-        }
+  background: #101322;
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+  color: white;
 
-        /* CHAT SECTION */
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding-bottom: 80px;
-        }
+}
 
-        .message {
-            display: flex;
-            gap: 10px;
-            max-width: 85%;
-        }
+header {
 
-        .message.user {
-            margin-left: auto;
-            flex-direction: row-reverse;
-        }
+  padding: 20px;
 
-        .message-bubble {
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 0.92rem;
-            line-height: 1.45;
-            word-wrap: break-word;
-        }
+  text-align: center;
 
-        .message.ai .message-bubble {
-            background: var(--bubble-ai);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-bottom-left-radius: 4px;
-        }
+  background: #191f38;
 
-        .message.user .message-bubble {
-            background: var(--bubble-user);
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 12px rgba(126, 34, 206, 0.3);
-        }
+  border-bottom: 1px solid #333b5c;
 
-        .chat-input-bar {
-            position: fixed;
-            bottom: 74px;
-            left: 0;
-            right: 0;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 8px 16px;
-            background: rgba(10, 11, 30, 0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            display: flex;
-            gap: 8px;
-            z-index: 40;
-        }
+}
 
-        .chat-input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 10px 18px;
-            color: #fff;
-            font-size: 0.92rem;
-            outline: none;
-        }
+header h1 { margin: 0; color: #a99cff; }
 
-        .chat-input:focus {
-            border-color: var(--primary-light);
-            background: rgba(255, 255, 255, 0.12);
-        }
+header p { color: #c7c9dc; }
 
-        .btn-send {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #9333ea, #3b82f6);
-            border: none;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
+#chatContainer {
 
-        /* CARD STYLING */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 14px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-        }
+  padding: 16px;
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+  max-width: 700px;
 
-        .tag {
-            font-size: 0.72rem;
-            padding: 3px 8px;
-            border-radius: 12px;
-            background: rgba(147, 51, 234, 0.25);
-            color: var(--primary-light);
-            font-weight: 500;
-        }
+  margin: auto;
 
-        .btn-copy {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #cbd5e1;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s ease;
-        }
+  min-height: 55vh;
 
-        .btn-copy:active {
-            background: var(--primary);
-            color: #fff;
-            transform: scale(0.95);
-        }
+}
 
-        .card-body {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #f1f5f9;
-            white-space: pre-line;
-        }
+.message { display: flex; margin: 12px 0; }
 
-        .card-subtext {
-            margin-top: 8px;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            font-style: italic;
-        }
+.message.user { justify-content: flex-end; }
 
-        /* FILTER CHIPS */
-        .filter-container {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 4px 0 16px 0;
-            scrollbar-width: none;
-        }
-        .filter-container::-webkit-scrollbar {
-            display: none;
-        }
+.message.ai { justify-content: flex-start; }
 
-        .chip {
-            padding: 6px 14px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            white-space: nowrap;
-            cursor: pointer;
-        }
+.message-bubble {
 
-        .chip.active {
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.4), rgba(59, 130, 246, 0.4));
-            border-color: var(--primary-light);
-            color: #fff;
-            font-weight: 500;
-        }
+  padding: 12px 15px;
 
-        /* BOTTOM NAVBAR (iPhone Style) */
-        nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 72px;
-            padding-bottom: env(safe-area-inset-bottom, 12px);
-            background: rgba(10, 11, 30, 0.92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 60;
-        }
+  border-radius: 16px;
 
-        .nav-item {
-            background: none;
-            border: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-muted);
-            font-size: 0.68rem;
-            cursor: pointer;
-            width: 20%;
-            transition: color 0.2s ease;
-        }
+  max-width: 85%;
 
-        .nav-item svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-            transition: transform 0.2s ease;
-        }
+  overflow-wrap: anywhere;
 
-        .nav-item.active {
-            color: var(--primary-light);
-            font-weight: 600;
-        }
+  line-height: 1.5;
 
-        .nav-item.active svg {
-            transform: translateY(-2px);
-            fill: url(#navGradient);
-        }
+}
 
-        /* TOAST ALERT */
-        .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: rgba(147, 51, 234, 0.9);
-            backdrop-filter: blur(8px);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 24px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease;
-            z-index: 100;
-        }
+.user .message-bubble {
 
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-        }
-    </style>
+  background: #6655d9;
+
+  color: white;
+
+}
+
+.ai .message-bubble {
+
+  background: #242a43;
+
+  color: white;
+
+}
+
+#chatForm {
+
+  display: flex;
+
+  gap: 8px;
+
+  padding: 12px;
+
+  max-width: 700px;
+
+  margin: 0 auto;
+
+  position: sticky;
+
+  bottom: 0;
+
+  background: #101322;
+
+}
+
+#chatInput {
+
+  flex: 1;
+
+  min-width: 0;
+
+  padding: 14px;
+
+  border-radius: 12px;
+
+  border: 1px solid #555c7c;
+
+  background: #1d233b;
+
+  color: white;
+
+  font-size: 16px;
+
+}
+
+#sendButton {
+
+  border: 0;
+
+  border-radius: 12px;
+
+  padding: 0 18px;
+
+  background: #7967f5;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: bold;
+
+}
+
+#sendButton:disabled { opacity: 0.6; }
+
+.note {
+
+  text-align: center;
+
+  color: #aeb3cb;
+
+  font-size: 12px;
+
+  padding: 10px;
+
+}
+
+</style>
+
 </head>
+
 <body>
 
-    <!-- SVG GRADIENT DEFINITION -->
-    <svg width="0" height="0" style="position: absolute;">
-        <defs>
-            <linearGradient id="navGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#c084fc"/>
-                <stop offset="100%" stop-color="#60a5fa"/>
-            </linearGradient>
-        </defs>
-    </svg>
+<header>
 
-    <!-- HEADER -->
-    <header>
-        <div class="brand">
-            <div class="brand-logo">☀️</div>
-            <div class="brand-text">
-                <h1>Surya AI</h1>
-                <p>स्मार्ट हिंदी असिस्टेंट</p>
-            </div>
-        </div>
-        <div class="status-badge">
-            <div class="status-dot"></div>
-            <span>सक्रिय (Online)</span>
-        </div>
-    </header>
+  <h1>☀️ Surya AI</h1>
 
-    <!-- MAIN BODY CONTENT -->
-    <main>
+  <p>आपका पर्सनल AI साथी</p>
 
-        <!-- 1. CHAT TAB -->
-        <section id="chat-tab" class="tab-content active">
-            <div class="chat-container" id="chatContainer">
-                <div class="message ai">
-                    <div class="message-bubble">
-                        नमस्ते! 🙏 मैं <strong>Surya AI</strong> हूँ।<br>
-                        आज मैं आपकी क्या सहायता कर सकता हूँ? आप मुझसे शायरी, गीत, Instagram कैप्शन या कोई भी सवाल पूछ सकते हैं।
-                    </div>
-                </div>
-            </div>
+</header>
 
-            <div class="chat-input-bar">
-                <input type="text" id="chatInput" class="chat-input" placeholder="यहाँ कुछ भी हिंदी में पूछें..." onkeydown="handleEnter(event)">
-                <button class="btn-send" onclick="sendMessage()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
-                </button>
-            </div>
-        </section>
+<div id="chatContainer">
 
-        <!-- 2. INSTAGRAM CAPTIONS TAB -->
-        <section id="captions-tab" class="tab-content">
-            <div class="filter-container">
-                <div class="chip active">सभी (All)</div>
-                <div class="chip">Attitude</div>
-                <div class="chip">Aesthetic</div>
-                <div class="chip">Travel</div>
-            </div>
+  <div class="message ai">
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">Attitude & Swag</span>
-                    <button class="btn-copy" onclick="copyText('हम खामोश क्या हुए, दुनिया खुद को शेर समझने लगी! 👑🔥 #RoyalVibes #SuryaPower')">कॉपी करें</button>
-                </div>
-                <div class="card-body">हम खामोश क्या हुए, दुनिया खुद को शेर समझने लगी! 👑🔥
-#RoyalVibes #SuryaPower #RealKing</div>
-            </div>
+    <div class="message-bubble">
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">Aesthetic Vibes</span>
-                    <button class="btn-copy" onclick="copyText('सपनों की उड़ान में पंख नहीं, हौसले काम आते हैं। 🌌✨ #DeepThoughts #SoulSearch')">कॉपी करें</button>
-                </div>
-                <div class="card-body">सपनों की उड़ान में पंख नहीं, हौसले काम आते हैं। 🌌✨
-#DeepThoughts #SoulSearch #VibeCheck</div>
-            </div>
+      नमस्ते भाई! 🙏 मैं Surya AI हूँ। मुझे मैसेज भेजकर देखिए।
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">Travel & Peace</span>
-                    <button class="btn-copy" onclick="copyText('पहाड़ों की ठंडी हवा और सुकून की तलाश। 🏔️☕ #Wanderlust #HimachalVibes')">कॉपी करें</button>
-                </div>
-                <div class="card-body">पहाड़ों की ठंडी हवा और सुकून की तलाश। 🏔️☕
-#Wanderlust #HimachalVibes #TravelDiaries</div>
-            </div>
-        </section>
+    </div>
 
-        <!-- 3. SHAYARI TAB -->
-        <section id="shayari-tab" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">इश्क़ (Love)</span>
-                    <button class="btn-copy" onclick="copyText('तेरी सादगी को निहारने का मन करता है,\nतू पास न हो तो पुकारने का मन करता है।\nयूँ तो मुकम्मल है मेरी ज़िन्दगी,\nमगर तेरे साथ हर लम्हा गुजारने का मन करता है। ❤️')">कॉपी करें</button>
-                </div>
-                <div class="card-body">तेरी सादगी को निहारने का मन करता है,
-तू पास न हो तो पुकारने का मन करता है।
-यूँ तो मुकम्मल है मेरी ज़िन्दगी,
-मगर तेरे साथ हर लम्हा गुजारने का मन करता है। ❤️</div>
-            </div>
+  </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">दोस्ती (Friendship)</span>
-                    <button class="btn-copy" onclick="copyText('गुनाह करके सज़ा से डरते हैं,\nज़हर पी के दवा से डरते हैं।\nदुश्मनों से तो हम नहीं डरते,\nमगर यार की खफ़ा होने से डरते हैं। 🤝')">कॉपी करें</button>
-                </div>
-                <div class="card-body">गुनाह करके सज़ा से डरते हैं,
-ज़हर पी के दवा से डरते हैं।
-दुश्मनों से तो हम नहीं डरते,
-मगर यार की खफ़ा होने से डरते हैं। 🤝</div>
-            </div>
+</div>
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">हौसला (Motivation)</span>
-                    <button class="btn-copy" onclick="copyText('मंजिलें उन्हीं को मिलती हैं जिनके सपनों में जान होती है,\nपंख से कुछ नहीं होता, हौसलों से उड़ान होती है। 🦅')">कॉपी करें</button>
-                </div>
-                <div class="card-body">मंजिलें उन्हीं को मिलती हैं जिनके सपनों में जान होती है,
-पंख से कुछ नहीं होता, हौसलों से उड़ान होती है। 🦅</div>
-            </div>
-        </section>
+<form id="chatForm">
 
-        <!-- 4. LYRICS TAB -->
-        <section id="lyrics-tab" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">Romantic Melody</span>
-                    <button class="btn-copy" onclick="copyText('रात की खामोशी में जब नाम तेरा गूंजे,\nदिल के हर एक कोने में बस तू ही तू सूझे।\nधड़कनों की ये सरगम बस तेरे लिए गाए,\nतुझसे जुदा होके ये पल भर जी ना पाए... ✨')">कॉपी करें</button>
-                </div>
-                <div class="card-body">रात की खामोशी में जब नाम तेरा गूंजे,
-दिल के हर एक कोने में बस तू ही तू सूझे।
-धड़कनों की ये सरगम बस तेरे लिए गाए,
-तुझसे जुदा होके ये पल भर जी ना पाए... ✨</div>
-                <div class="card-subtext">मूड: स्लो, गिटार एकॉस्टिक, रोमांटिक</div>
-            </div>
+  <input id="chatInput" type="text"
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">Desi Rap Beat</span>
-                    <button class="btn-copy" onclick="copyText('गली से निकला लड़का, सपना बड़ा देखा था,\nकिस्मत ने भी रास्ता थोड़ा टेढ़ा फेंका था।\nपर रुका नहीं मैं, झुका नहीं मैं,\nशोर मचाने आया हूँ, हवा में उड़ा नहीं मैं! 🎤🔥')">कॉपी करें</button>
-                </div>
-                <div class="card-body">गली से निकला लड़का, सपना बड़ा देखा था,
-किस्मत ने भी रास्ता थोड़ा टेढ़ा फेंका था।
-पर रुका नहीं मैं, झुका नहीं मैं,
-शोर मचाने आया हूँ, हवा में उड़ा नहीं मैं! 🎤🔥</div>
-                <div class="card-subtext">मूड: फास्ट बीट्स, हिप-हॉप, एनर्जी</div>
-            </div>
-        </section>
+    placeholder="यहाँ मैसेज लिखें..."
 
-        <!-- 5. IMAGE PROMPTS TAB -->
-        <section id="prompts-tab" class="tab-content">
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">Indian Cyberpunk</span>
-                    <button class="btn-copy" onclick="copyText('A futuristic Indian warrior in glowing purple and gold cyber armor, standing in a rain-soaked Varanasi street with neon holographic lamps, cinematic lighting, 8k resolution, Unreal Engine 5 render --ar 16:9')">कॉपी करें</button>
-                </div>
-                <div class="card-body">A futuristic Indian warrior in glowing purple and gold cyber armor, standing in a rain-soaked Varanasi street with neon holographic lamps, cinematic lighting, 8k resolution, Unreal Engine 5 render --ar 16:9</div>
-                <div class="card-subtext">Midjourney / Bing Image Creator के लिए उपयुक्त</div>
-            </div>
+    autocomplete="off" required>
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">Spiritual Art</span>
-                    <button class="btn-copy" onclick="copyText('Lord Shiva meditating on Himalayan peaks, cosmic glowing nebula in the background, sacred river Ganga flowing, soft blue and purple aura, ultra realistic portrait, highly detailed --ar 9:16')">कॉपी करें</button>
-                </div>
-                <div class="card-body">Lord Shiva meditating on Himalayan peaks, cosmic glowing nebula in the background, sacred river Ganga flowing, soft blue and purple aura, ultra realistic portrait, highly detailed --ar 9:16</div>
-                <div class="card-subtext">Instagram Story / Wallpaper फॉर्मेट (9:16)</div>
-            </div>
+  <button id="sendButton" type="submit">Send ➤</button>
 
-            <div class="card">
-                <div class="card-header">
-                    <span class="tag">3D Pixar Style</span>
-                    <button class="btn-copy" onclick="copyText('Cute 3D animated young Indian boy coding with a glowing laptop, surrounded by floating AI icons and holographic stars, Pixar style, vivid warm colors, octane render --v 6.0')">कॉपी करें</button>
-                </div>
-                <div class="card-body">Cute 3D animated young Indian boy coding with a glowing laptop, surrounded by floating AI icons and holographic stars, Pixar style, vivid warm colors, octane render --v 6.0</div>
-                <div class="card-subtext">DALL-E 3 / Midjourney स्टाइल</div>
-            </div>
-        </section>
+</form>
 
-    </main>
+<div class="note">Surya AI • Demo Chat</div>
 
-    <!-- BOTTOM NAVIGATION (iPhone App Bar) -->
-    <nav>
-        <button class="nav-item active" onclick="switchTab('chat-tab', this)">
-            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>
-            <span>चैट</span>
-        </button>
+<script>
 
-        <button class="nav-item" onclick="switchTab('captions-tab', this)">
-            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            <span>कैप्शन</span>
-        </button>
+const chatInput = document.getElementById("chatInput");
 
-        <button class="nav-item" onclick="switchTab('shayari-tab', this)">
-            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            <span>शायरी</span>
-        </button>
+const chatContainer = document.getElementById("chatContainer");
 
-        <button class="nav-item" onclick="switchTab('lyrics-tab', this)">
-            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-            <span>गीत</span>
-        </button>
+const chatForm = document.getElementById("chatForm");
 
-        <button class="nav-item" onclick="switchTab('prompts-tab', this)">
-            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-            <span>प्रॉम्प्ट्स</span>
-        </button>
-    </nav>
+const sendButton = document.getElementById("sendButton");
 
-    <!-- TOAST POPUP -->
-    <div id="toast" class="toast">टेक्स्ट कॉपी हो गया! ✨</div>
+function addMessage(text, type) {
 
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        // Tab Switcher
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+  const message = document.createElement("div");
 
-        // Copy Function
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast("सफलतापूर्वक कॉपी किया गया! ✨");
-            }).catch(() => {
-                // Fallback for older iOS versions
-                const dummy = document.createElement("textarea");
-                document.body.appendChild(dummy);
-                dummy.value = text;
-                dummy.select();
-                document.execCommand("copy");
-                document.body.removeChild(dummy);
-                showToast("सफलतापूर्वक कॉपी किया गया! ✨");
-            });
-        }
+  message.className = "message " + type;
 
-        // Toast Notification
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2000);
-        }
+  const bubble = document.createElement("div");
 
-        // Enter key to send
-        function handleEnter(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        }
+  bubble.className = "message-bubble";
 
-        // AI Chat Engine (Pre-trained Hindi Responses)
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if (!text) return;
+  bubble.textContent = text;
 
-            const chatContainer = document.getElementById('chatContainer');
+  message.appendChild(bubble);
 
-            // Append User Message
-            const userMsgDiv = document.createElement('div');
-            userMsgDiv.className = 'message user';
-            userMsgDiv.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
-            chatContainer.appendChild(userMsgDiv);
+  chatContainer.appendChild(message);
 
-            input.value = '';
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  window.scrollTo(0, document.body.scrollHeight);
 
-            // Show Typing effect
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'message ai';
-            loadingDiv.innerHTML = `<div class="message-bubble" style="color: #c084fc;">Surya सोच रहा है... 💭</div>`;
-            chatContainer.appendChild(loadingDiv);
+}
 
-            setTimeout(() => {
-                chatContainer.removeChild(loadingDiv);
-                const reply = generateSuryaResponse(text);
-                const aiMsgDiv = document.createElement('div');
-                aiMsgDiv.className = 'message ai';
-                aiMsgDiv.innerHTML = `<div class="message-bubble">${reply}</div>`;
-                chatContainer.appendChild(aiMsgDiv);
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            }, 800);
-        }
+function getReply(message) {
 
-        function generateSuryaResponse(query) {
-            const q = query.toLowerCase();
+  const q = message.toLowerCase();
 
-            if (q.includes('नमस्ते') || q.includes('hello') || q.includes('hi') || q.includes('हाय')) {
-                return "नमस्ते भाई! ☀️ आपका दिन मंगलमय हो। बताइए आज आपके लिए क्या लिखूं - शायरी, कैप्शन या कोई खास विचार?";
-            }
-            if (q.includes('शायरी') || q.includes('shayari')) {
-                return "ज़रूर, ये ख़ास शायरी आपके लिए:<br><br><i>'हवाओं से कह दो अपनी हद में रहें,<br>हम परों से नहीं हौसलों से उड़ते हैं!'</i> 🦅✨";
-            }
-            if (q.includes('कैप्शन') || q.includes('caption') || q.includes('instagram')) {
-                return "Instagram के लिए यह बेस्ट रहेगा:<br><br><b>'सादगी में ही सबसे बड़ा स्टाइल है। 👑✨ #Vibe #Original'</b>";
-            }
-            if (q.includes('गीत') || q.includes('lyrics') || q.includes('गाने')) {
-                return "लीजिए कुछ पंक्तियां:<br><br><i>'तेरी यादों का साया है हर पहर,<br>तेरे बिना सूना लगे ये शहर...' 🎶❤️</i>";
-            }
-            if (q.includes('prompt') || q.includes('फोटो') || q.includes('photo')) {
-                return "इमेज जनरेट करने के लिए नीचे दिए <b>प्रॉम्प्ट्स</b> टैब में जाएं या इस्तेमाल करें:<br><br><code>A mystical temple surrounded by glowing purple nebula, 8k, cinematic lighting</code>";
-            }
-            if (q.includes('नाम') || q.includes('कौन हो')) {
-                return "मेरा नाम <strong>Surya AI</strong> है। मैं आपका पर्सनल क्रिएटिव AI सहायक हूँ जिसे हिंदी यूज़र्स के लिए डिज़ाइन किया गया है।";
-            }
-            return "आपका यह विचार बहुत सुंदर है! 👌 अगर आप चाहें तो मैं इस विषय पर आपके लिए एक बेहतरीन Instagram रील स्क्रिप्ट, शायरी या इमेज प्रॉम
+  if (q.includes("नमस्ते") || q.includes("hello") ||
+
+      q.includes("hi") || q.includes("हाय")) {
+
+    return "नमस्ते भाई! ☀️ बताइए, मैं आपकी क्या मदद करूँ?";
+
+  }
+
+  if (q.includes("नाम") || q.includes("कौन हो")) {
+
+    return "मेरा नाम Surya AI है। मैं आपका पर्सनल AI साथी हूँ।";
+
+  }
+
+  if (q.includes("शायरी") || q.includes("shayari")) {
+
+    return "हौसले बुलंद हों तो रास्ते बन जाते हैं,\nमेहनत करने वालों के सपने सच हो जाते हैं! ✨";
+
+  }
+
+  if (q.includes("फोटो") || q.includes("photo") ||
+
+      q.includes("prompt")) {
+
+    return "मैं आपके लिए फोटो एडिटिंग का प्रॉम्प्ट बनाने में मदद कर सकता हूँ। अपनी फोटो का आइडिया बताइए।";
+
+  }
+
+  return "आपका मैसेज मिल गया! 😊 अभी मैं डेमो मोड में हूँ। असली AI जवाबों के लिए मुझे AI सेवा से जोड़ना होगा।";
+
+}
+
+chatForm.addEventListener("submit", function(event) {
+
+  event.preventDefault();
+
+  const text = chatInput.value.trim();
+
+  if (!text) return;
+
+  addMessage(text, "user");
+
+  chatInput.value = "";
+
+  sendButton.disabled = true;
+
+  setTimeout(function() {
+
+    addMessage(getReply(text), "ai");
+
+    sendButton.disabled = false;
+
+    chatInput.focus();
+
+  }, 400);
+
+});
+
+</script>
+
+</body>
+
+</html>
